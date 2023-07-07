@@ -168,20 +168,32 @@ function Carro(larguraJogo){
 
 }
 
-function background(area){
-    
-    const imagens = ['./img/dia01.png', './img/dia02.png']; // Array com os caminhos das imagens
+function background(area, pontos) {
+    let imagens = ['./img/dia01.png', './img/dia02.png']; // Array com os caminhos das imagens
     let indiceImagemAtual = 0;
-    
+  
     function trocarImagem() {
       area.style.backgroundImage = `url(${imagens[indiceImagemAtual]})`;
       indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
+      if (pontos >= 10) { // Exemplo: Muda para noite quando atinge 10 pontos
+        noite();
+      } else {
+        dia();
+      }
     }
-    
+  
+    function noite() {
+      imagens = ['./img/noite01.png', './img/noite02.png'];
+    }
+  
+    function dia() {
+      imagens = ['./img/dia01.png', './img/dia02.png'];
+    }
+  
+  
     setInterval(trocarImagem, 500);
-
-}
-
+  }
+  
 function Passaro(alturaJogo,larguraJogo) {
     let voando = false
     let direita = false
@@ -267,8 +279,9 @@ setInterval(() => {
 
 
  function Progresso() {
-
+    
     this.elemento = novoElemento('span', 'progresso')
+    console.log("passeiporaqui")
     this.atualizarPontos = pontos => {
         this.elemento.innerHTML = pontos
         console.log("++1")
@@ -323,8 +336,11 @@ function colidiu(passaro, rival) {
     const rival = new Rival(altura, largura,        
         () => progresso.atualizarPontos(++pontos))
     
-
-   /* areaDoJogo.appendChild(progresso.elemento)  */
+    // const musica = document.createElement('audio','audio');
+    // musica.src = 'img/musica.mp4'
+    // musica.loop = true; // Para repetir a música continuamente
+    // areaDoJogo.appendChild(musica);
+    areaDoJogo.appendChild(progresso.elemento) 
     areaDoJogo.appendChild(passaro.elemento)
     areaDoJogo.appendChild(rival.elemento)
    /*  barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento)) */
@@ -339,7 +355,7 @@ function colidiu(passaro, rival) {
                  clearInterval(temporizador) 
              }  
         }, 20)
-        background(areaDoJogo)
+        background(areaDoJogo,pontos)
     }
 }
  new FlappyBird().start() 

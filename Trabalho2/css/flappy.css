@@ -88,5 +88,8 @@ body {
     font-family: Pixel;
     font-size: 70px;
     z-index: 100;
-    color: black;
 }
+.audio {
+    width: 300px;
+    margin: 0 auto;
+  }
