@@ -14,6 +14,79 @@ function Barreira(reversa = false) {
     this.setAltura = altura => corpo.style.height = `${altura}px`
 
 }
+
+function Carro(larguraJogo){
+    let paraEsquerda = false;
+    this.elemento = novoElemento('img','carro');
+    this.src = 'img/carro.png'
+    this.getX = ()=>parseInt(this.elemento.style.left.split('px'[0]))
+    this.setX = x => this.elemento.style.left = `${x}px`
+
+
+}
+var time;
+function background(area){
+    
+    const imagens = ['./img/dia01.png', './img/dia02.png']; // Array com os caminhos das imagens
+    let indiceImagemAtual = 0;
+    
+    function trocarImagem() {
+      area.style.backgroundImage = `url(${imagens[indiceImagemAtual]})`;
+      indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
+    }
+    
+    setInterval(trocarImagem, 500);
+
+}
+
+function Rival (alturaJogo,larguraJogo,notificarPonto) {
+
+    this.elemento = novoElemento('img', 'rival')
+    this.elemento.src = 'img/carro-verde.png'
+    const imagens = ['./img/carro-azul.png', './img/carro-branco.png','./img/carro-verde.png']; 
+    const direcaoX = [2.4,-2.4,0]
+    const incrementoY = [3,4,5]
+    let incrementoAtualY = 0
+    let incrementoAtualX = 0
+
+    this.setV = (visivel)=>this.elemento.style.display=visivel
+    
+    this.getY = () => parseInt(this.elemento.style.bottom.split('px')[0])
+    this.setY = y => this.elemento.style.bottom = `${y}px`
+    this.getX = ()=>parseInt(this.elemento.style.left.split('px'[0]))
+    this.setX = x => this.elemento.style.left = `${x}px`
+    let indiceImagemAtual = 0;
+    this.animar = () => {
+        const novoY = this.getY() -incrementoY[incrementoAtualY]
+        const novoX = this.getX() - direcaoX[incrementoAtualX]
+
+        incrementoAtual=(incrementoAtualY+1)%imagens.length
+        
+        const alturaMaxima = alturaJogo - this.elemento.clientWidth
+        const larguraMaxima = larguraJogo - this.elemento.clientHeight
+        this.setY(novoY)
+        this.setX(novoX)
+        if (novoY <= 0) {
+            notificarPonto()
+            this.setV("none")
+            this.elemento.src = imagens[indiceImagemAtual]
+            indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
+            this.setY(alturaJogo/2.3)
+            this.setX(larguraJogo / 2.2)
+
+            this.setV("inline")
+            incrementoAtualX=(incrementoAtualX+1)%imagens.length
+
+        }
+        
+    }
+
+    this.setY(alturaJogo / 2.3)
+    this.setX(larguraJogo / 2.2)
+
+   
+}
+
  
 /* const b= new Barreira(false)
 b.setAltura(900)
@@ -21,7 +94,7 @@ document.querySelector('[wm-flappy]').appendChild(b.elemento)  */
 
 
 
-function ParDeBarreiras(altura, abertura, popsicaoNaTela) {
+function ParDeBarreiras(altura, abertura, ) {
     this.elemento = novoElemento('div', 'par-de-barreiras')
     this.superior = new Barreira(true)
     this.inferior = new Barreira(false)
@@ -94,7 +167,7 @@ function Carro(larguraJogo){
 
 
 }
-var timebackground
+
 function background(area){
     
     const imagens = ['./img/dia01.png', './img/dia02.png']; // Array com os caminhos das imagens
@@ -126,7 +199,6 @@ function Passaro(alturaJogo,larguraJogo) {
     window.addEventListener('keydown', e => {
         if (e.key === 'ArrowLeft') {
             esquerda=true
-            console.log('esquerda')
         }
         if (e.key === 'ArrowUp') {
             voando=true
@@ -136,7 +208,6 @@ function Passaro(alturaJogo,larguraJogo) {
         }
         if (e.key === 'ArrowRight') {
             direita=true
-            console.log('direita')
             
         }
     })
@@ -154,7 +225,7 @@ function Passaro(alturaJogo,larguraJogo) {
     
     this.animar = () => {
         const novoY = this.getY() + (voando ? 8 : -5)
-        const novoX = this.getX() + (esquerda ? -10 : 0) + (direita ? 5 : 0)
+        const novoX = this.getX() + (esquerda ? -10 : 0) + (direita ? 10 : 0)
         
         const alturaMaxima = alturaJogo - this.elemento.clientWidth
         const larguraMaxima = larguraJogo - this.elemento.clientHeight
@@ -164,24 +235,20 @@ function Passaro(alturaJogo,larguraJogo) {
             this.setY(alturaMaxima)
         } else {
             this.setY(novoY)
-            console.log(this.getY())
         }
         if (novoX <= 160) {//se for menor está colidindo com o meio fio a esquerda
-            timebackground=1500
+            time=1500
             this.setX(160)
-            console.log('<=0')
         } else if (novoX >= larguraMaxima-160) {//se for maior está colidindo com o meio fio a direita
-            timebackground=1500
+            time=1500
             this.setX(larguraMaxima-160)
-            console.log('>larguraMax')
         } else {
-            timebackground=500
+            time=500
             this.setX(novoX)
-            console.log(this.getX())
         }
 
     }
-    this.setY(alturaJogo / 2)
+    this.setY(5)
     this.setX(larguraJogo / 2)
 }
 
@@ -204,6 +271,7 @@ setInterval(() => {
     this.elemento = novoElemento('span', 'progresso')
     this.atualizarPontos = pontos => {
         this.elemento.innerHTML = pontos
+        console.log("++1")
     }
     this.atualizarPontos(0)
 }
@@ -227,17 +295,15 @@ barreiras.pares.forEach( par => areaDoJogo.appendChild(par.elemento))  */
     return horizontal && vertical
 }
 
-function colidiu(passaro, barreiras) {
+function colidiu(passaro, rival) {
     let colidiu = false
 
-    barreiras.pares.forEach(parDeBarreiras => {
+    
         if (!colidiu) {
-            const superior = parDeBarreiras.superior.elemento
-            const inferior = parDeBarreiras.inferior.elemento
-            colidiu = estaoSobrepostos(passaro.elemento, superior)
-                || estaoSobrepostos(passaro.elemento, inferior)
+            colidiu = estaoSobrepostos(rival.elemento, passaro.elemento)
+            
         }
-    })
+    
     return colidiu
 
 }
@@ -251,22 +317,27 @@ function colidiu(passaro, barreiras) {
     const progresso = new Progresso()
     const barreiras = new Barreiras(altura, largura, 200, 400,
         () => progresso.atualizarPontos(++pontos)) */
+    const progresso = new Progresso()
 
     const passaro = new Passaro(altura,largura)
+    const rival = new Rival(altura, largura,        
+        () => progresso.atualizarPontos(++pontos))
+    
 
    /* areaDoJogo.appendChild(progresso.elemento)  */
     areaDoJogo.appendChild(passaro.elemento)
+    areaDoJogo.appendChild(rival.elemento)
    /*  barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento)) */
 
     this.start = () => {
         const temporizador = setInterval(() => {
            /*  barreiras.animar() */
+            rival.animar()
             passaro.animar()
-          
 
-              /* if(colidiu(passaro,barreiras)){
+               if(colidiu(passaro,rival)){
                  clearInterval(temporizador) 
-             }  */
+             }  
         }, 20)
         background(areaDoJogo)
     }
