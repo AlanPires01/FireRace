@@ -56,6 +56,12 @@ body {
     height: 50px;
     left:calc(50%-30px);
 }
+.obstaculo{
+    position:absolute;
+    width: 70px;
+    height: 70px;
+    left:calc(50%-30px);
+}
 
 .par-de-barreiras {
     position: absolute;
