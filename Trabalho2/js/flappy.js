@@ -4,41 +4,10 @@ function novoElemento(tagName, className) {
     return elemento
 }
 
-function Barreira(reversa = false) {
-    this.elemento = novoElemento('div', 'barreira')
-    const borda = novoElemento('div', 'borda')
-    const corpo = novoElemento('div', 'corpo')
-    this.elemento.appendChild(reversa ? corpo : borda)
-    this.elemento.appendChild(reversa ? borda : corpo)
-
-    this.setAltura = altura => corpo.style.height = `${altura}px`
-
-}
-
-function Carro(larguraJogo){
-    let paraEsquerda = false;
-    this.elemento = novoElemento('img','carro');
-    this.src = 'img/carro.png'
-    this.getX = ()=>parseInt(this.elemento.style.left.split('px'[0]))
-    this.setX = x => this.elemento.style.left = `${x}px`
 
 
-}
-var time;
-function background(area){
-    
-    const imagens = ['./img/dia01.png', './img/dia02.png']; // Array com os caminhos das imagens
-    let indiceImagemAtual = 0;
-    
-    function trocarImagem() {
-      area.style.backgroundImage = `url(${imagens[indiceImagemAtual]})`;
-      indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
-    }
-    
-    setInterval(trocarImagem, 500);
 
-}
-
+  
 function Rival (alturaJogo,larguraJogo,notificarPonto) {
 
     this.elemento = novoElemento('img', 'rival')
@@ -88,108 +57,52 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
 }
 
  
-/* const b= new Barreira(false)
-b.setAltura(900)
-document.querySelector('[wm-flappy]').appendChild(b.elemento)  */
 
 
 
-function ParDeBarreiras(altura, abertura, ) {
-    this.elemento = novoElemento('div', 'par-de-barreiras')
-    this.superior = new Barreira(true)
-    this.inferior = new Barreira(false)
-
-    this.elemento.appendChild(this.superior.elemento)
-    this.elemento.appendChild(this.inferior.elemento)
 
 
-     this.sortearAbertura = () => {
-        const alturaSuperior = Math.random() * (altura - abertura)
-        const alturaInferior = altura - abertura - alturaSuperior
-        this.superior.setAltura(alturaSuperior)
-        this.inferior.setAltura(alturaInferior)
-    }
-    this.getX = () => parseInt(this.elemento.style.left.split('px')[0])
-    this.setX =  popsicaoNaTela => this.elemento.style.left = `${popsicaoNaTela}px`
-    this.getLargura = () => this.elemento.clientWidth
 
-    this.sortearAbertura()
-    this.setX(popsicaoNaTela)
- } 
-
- /* const b= new ParDeBarreiras(550,250,500)
-document.querySelector('[wm-flappy]').appendChild(b.elemento)  
- */
-
-//qreversa ? borda : corpo
-function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
-    this.pares = [
-        new ParDeBarreiras(altura, abertura, largura),
-        new ParDeBarreiras(altura, abertura, largura + espaco),
-        new ParDeBarreiras(altura, abertura, largura + espaco * 2),
-        new ParDeBarreiras(altura, abertura, largura + espaco * 3)
-    ]
-
-    const deslocamento = 3
-    this.animar = () => {
-        this.pares.forEach(par => {
-            par.setX(par.getX() - deslocamento)
-
-            if (par.getX() < -par.getLargura()) {
-                par.setX(par.getX() + espaco * this.pares.length)
-                par.sortearAbertura()
-            }
-            const meio = largura / 2
-            const cruzouMeio = par.getX() + deslocamento >= meio
-                && par.getX() < meio
-            if (cruzouMeio) {
-                notificarPonto()
-            }
-        })
-    }
-}
-
-/* const barreiras = new Barreiras(500, 300, 100, 400)
-const areaDoJogo = document.querySelector('[wm-flappy]') */
-
-/* barreiras.pares.forEach( par => areaDoJogo.appendChild(par.elemento)) 
-
-setInterval(() => {
-    barreiras.animar()
-},50)  
- */
-function Carro(larguraJogo){
-    let paraEsquerda = false;
-    this.elemento = novoElemento('img','carro');
-    this.src = 'img/carro.png'
-    this.getX = ()=>parseInt(this.elemento.style.left.split('px'[0]))
-    this.setX = x => this.elemento.style.left = `${x}px`
-
-
-}
+let tempo=0
+const imagens = ['./img/curva01.png', './img/curva02.png']; // Array com os caminhos das imagens
 
 function background(area, pontos) {
-    let imagens = ['./img/dia01.png', './img/dia02.png']; // Array com os caminhos das imagens
+    console.log(pontos)
     let indiceImagemAtual = 0;
-  
     function trocarImagem() {
+      if (tempo<=5) {
+        dia();
+        console.log('dia')
+      }else if(tempo<=10) {
+        noite()
+        console.log('curva')
+      }else if(tempo<=15){
+        
+        curva()
+        console.log()
+      }else{
+        tempo=0
+
+      }
+      
       area.style.backgroundImage = `url(${imagens[indiceImagemAtual]})`;
       indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
-      if (pontos >= 10) { // Exemplo: Muda para noite quando atinge 10 pontos
-        noite();
-      } else {
-        dia();
-      }
+      tempo++;
     }
   
     function noite() {
-      imagens = ['./img/noite01.png', './img/noite02.png'];
+      imagens[0] = './img/noite01.png';
+      imagens[1] = './img/noite02.png';
+    }
+    function curva(){
+        imagens[0] = './img/curva01.png'
+        imagens[1] = './img/curva02.png'
     }
   
     function dia() {
-      imagens = ['./img/dia01.png', './img/dia02.png'];
+      imagens[0] = './img/dia01.png';
+      imagens[1] = './img/dia02.png';
     }
-  
   
     setInterval(trocarImagem, 500);
   }
@@ -234,10 +147,12 @@ function Passaro(alturaJogo,larguraJogo) {
 
    
    
-    
+    let tempoAtual
+   let velocidade =5
     this.animar = () => {
+        
         const novoY = this.getY() + (voando ? 8 : -5)
-        const novoX = this.getX() + (esquerda ? -10 : 0) + (direita ? 10 : 0)
+        const novoX = this.getX() + (esquerda ? -velocidade : 0) + (direita ? velocidade : 0)
         
         const alturaMaxima = alturaJogo - this.elemento.clientWidth
         const larguraMaxima = larguraJogo - this.elemento.clientHeight
@@ -251,12 +166,19 @@ function Passaro(alturaJogo,larguraJogo) {
         if (novoX <= 160) {//se for menor está colidindo com o meio fio a esquerda
             time=1500
             this.setX(160)
-        } else if (novoX >= larguraMaxima-160) {//se for maior está colidindo com o meio fio a direita
+            velocidade=2
+            tempoAtual=tempo
+
+        } else if (novoX >= larguraMaxima-250) {//se for maior está colidindo com o meio fio a direita
             time=1500
-            this.setX(larguraMaxima-160)
+            this.setX(larguraMaxima-250)
+            velocidade=2
+            tempoAtual=tempo
         } else {
-            time=500
             this.setX(novoX)
+            if(tempo-tempoAtual>5){
+              velocidade=10
+            }
         }
 
     }
@@ -264,21 +186,8 @@ function Passaro(alturaJogo,larguraJogo) {
     this.setX(larguraJogo / 2)
 }
 
-/* const barreiras = new Barreiras(700, 400, 200, 400)
-const passaro = new Passaro(700)
 
-const areaDoJogo = document.querySelector('[wm-flappy]')
-
-areaDoJogo.appendChild(passaro.elemento)
-barreiras.pares.forEach( par => areaDoJogo.appendChild(par.elemento)) 
-
-setInterval(() => {
-      barreiras.animar()
-      passaro.animar() 
-},20) */
-
-
- function Progresso() {
+function Progresso() {
     
     this.elemento = novoElemento('span', 'progresso')
     console.log("passeiporaqui")
@@ -289,16 +198,9 @@ setInterval(() => {
     this.atualizarPontos(0)
 }
 
-/*  const barreiras = new Barreiras(700, 400, 200, 400)
-const passaro = new Passaro(700)
-
-const areaDoJogo = document.querySelector('[wm-flappy]')
-
-areaDoJogo.appendChild(passaro.elemento)
-barreiras.pares.forEach( par => areaDoJogo.appendChild(par.elemento))  */
 
 
- function estaoSobrepostos(elementoA, elementoB) {
+function estaoSobrepostos(elementoA, elementoB) {
 
     const a = elementoA.getBoundingClientRect()
     const b = elementoB.getBoundingClientRect()
