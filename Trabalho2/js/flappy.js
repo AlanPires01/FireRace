@@ -1,3 +1,12 @@
+var tempo=0 // funcao usada para contar o tempo a cada segundo
+function contaTempo(){
+    tempo++
+    console.log("tempo" + tempo)
+}
+setInterval(contaTempo,1000)
+
+
+
 function novoElemento(tagName, className) {
     const elemento = document.createElement(tagName)
     elemento.className = className
@@ -6,8 +15,62 @@ function novoElemento(tagName, className) {
 
 
 
+function Elemento(alturaJogo,larguraJogo,notificarPonto,passaro){
+    this.elemento = novoElemento('img', 'ferramenta')
+    this.elemento.src = 'img/ferramenta01.png'
+    const imagensE = ['./img/ferramenta01.png', './img/ferramenta03.png','./img/ferramenta04.png']; 
+    const direcaoX = [2.4,-2.4,0]
+    const incrementoY = [1,2,5]
+    let incrementoAtualY = 0
+    let incrementoAtualX = 0
+    let passou=false
 
-  
+    this.setV = (visivel)=>this.elemento.style.display=visivel
+    
+    this.getY = () => parseInt(this.elemento.style.bottom.split('px')[0])
+    this.setY = y => this.elemento.style.bottom = `${y}px`
+    this.getX = ()=>parseInt(this.elemento.style.left.split('px'[0]))
+    this.setX = x => this.elemento.style.left = `${x}px`
+    let indiceImagemAtual = 0;
+    let contador=0
+    this.animar = () => {
+        const novoY = this.getY() -incrementoY[incrementoAtualY]
+        const novoX = this.getX() - direcaoX[incrementoAtualX]
+        incrementoAtualY=(incrementoAtualY+1)%imagensE.length
+        
+        const alturaMaxima = alturaJogo - this.elemento.clientWidth
+        const larguraMaxima = larguraJogo - this.elemento.clientHeight
+        this.setY(novoY)
+        this.setX(novoX)
+       
+        
+        if ((this.elemento.style.display.trim()==='none')&&(contador>=100)) {
+            console.log("entrou")
+            this.setV('inline');
+            this.elemento.src = imagensE[indiceImagemAtual]
+            indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
+            this.setY(alturaJogo/2.3)
+            this.setX(larguraJogo / 2.2)
+
+           
+            incrementoAtualX=(incrementoAtualX+1)%imagens.length
+            contador=0
+
+        }
+        if((novoX<=0)||(novoX>=larguraMaxima)||(novoY<=0)){
+            this.setV("none")
+        }
+        contador++
+       
+        
+        
+    }
+    this.setY(alturaJogo/2.3)
+        this.setX(larguraJogo / 2.2)
+}
+
+
+
 function Rival (alturaJogo,larguraJogo,notificarPonto) {
 
     this.elemento = novoElemento('img', 'rival')
@@ -61,13 +124,9 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
 
 
 
-let tempo=0
-function contaTempo(){
-    tempo++
-}
-setInterval(contaTempo,1000)
 
 
+let sentidoCurva //variavel para indicar sentido da curva 0 - nao tem curva, 1-curva para esquerda , 2 - curva para direita
 const imagens = ['./img/curva01.png', './img/curva02.png']; // Array com os caminhos das imagens
 let trocar=0
 function background(area, pontos) {
@@ -76,14 +135,10 @@ function background(area, pontos) {
     function trocarImagem() {
       if (trocar<=10) {
         dia();
-        console.log('dia')
       }else if(trocar<=20) {
         noite()
-        console.log('curva')
       }else if(trocar<=30){
-        
         curva()
-        console.log()
       }else{
         trocar=0
 
@@ -97,15 +152,18 @@ function background(area, pontos) {
     function noite() {
       imagens[0] = './img/noite01.png';
       imagens[1] = './img/noite02.png';
+      sentidoCcurva=0
     }
     function curva(){
         imagens[0] = './img/curva01.png'
         imagens[1] = './img/curva02.png'
+        sentidoCurva=-2
     }
   
     function dia() {
       imagens[0] = './img/dia01.png';
       imagens[1] = './img/dia02.png';
+      sentidoCurva=0
     }
   
     setInterval(trocarImagem, 500);
@@ -151,12 +209,12 @@ function Passaro(alturaJogo,larguraJogo) {
 
    
    
-
+    let tempoAtual
    let velocidade =5
     this.animar = () => {
         
         const novoY = this.getY() + (voando ? 8 : -5)
-        const novoX = this.getX() + (esquerda ? -velocidade : 0) + (direita ? velocidade : 0)
+        const novoX = this.getX() + (esquerda ? -velocidade : 0) + (direita ? velocidade : 0) + sentidoCurva
         
         const alturaMaxima = alturaJogo - this.elemento.clientWidth
         const larguraMaxima = larguraJogo - this.elemento.clientHeight
@@ -168,7 +226,7 @@ function Passaro(alturaJogo,larguraJogo) {
             this.setY(novoY)
         }
         if (novoX <= 160) {//se for menor está colidindo com o meio fio a esquerda
-            time=1500
+            
             this.setX(160)
             velocidade=2
             tempoAtual=tempo
@@ -188,6 +246,7 @@ function Passaro(alturaJogo,larguraJogo) {
     }
     this.setY(5)
     this.setX(larguraJogo / 2)
+
 }
 
 
@@ -197,7 +256,6 @@ function Progresso() {
     console.log("passeiporaqui")
     this.atualizarPontos = pontos => {
         this.elemento.innerHTML = pontos
-        console.log("++1")
     }
     this.atualizarPontos(0)
 }
@@ -241,6 +299,9 @@ function colidiu(passaro, rival) {
     const passaro = new Passaro(altura,largura)
     const rival = new Rival(altura, largura,        
         () => progresso.atualizarPontos(++pontos))
+    const elemento = new Elemento(altura, largura,        
+        () => progresso.atualizarPontos(++pontos),passaro)
+
     
     // const musica = document.createElement('audio','audio');
     // musica.src = 'img/musica.mp4'
@@ -249,6 +310,8 @@ function colidiu(passaro, rival) {
     areaDoJogo.appendChild(progresso.elemento) 
     areaDoJogo.appendChild(passaro.elemento)
     areaDoJogo.appendChild(rival.elemento)
+    areaDoJogo.appendChild(elemento.elemento)
+
    /*  barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento)) */
 
     this.start = () => {
@@ -256,12 +319,24 @@ function colidiu(passaro, rival) {
            /*  barreiras.animar() */
             rival.animar()
             passaro.animar()
-
+            elemento.animar()
                if(colidiu(passaro,rival)){
                  clearInterval(temporizador) 
-             }  
+                }  
+                if (colidiu(passaro,elemento)) {
+                    progresso.atualizarPontos(pontos+2)
+
+                    elemento.elemento.style.display="none"
+    
+                    
+                }
+             window.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                  location.reload();
+                }
+              });
         }, 20)
         background(areaDoJogo,pontos)
     }
 }
- new FlappyBird().start() 
+ new FlappyBird().start()
