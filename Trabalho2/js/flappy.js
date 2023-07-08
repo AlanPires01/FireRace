@@ -61,33 +61,37 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
 
 
 
-
-
 let tempo=0
-const imagens = ['./img/curva01.png', './img/curva02.png']; // Array com os caminhos das imagens
+function contaTempo(){
+    tempo++
+}
+setInterval(contaTempo,1000)
 
+
+const imagens = ['./img/curva01.png', './img/curva02.png']; // Array com os caminhos das imagens
+let trocar=0
 function background(area, pontos) {
     console.log(pontos)
     let indiceImagemAtual = 0;
     function trocarImagem() {
-      if (tempo<=5) {
+      if (trocar<=10) {
         dia();
         console.log('dia')
-      }else if(tempo<=10) {
+      }else if(trocar<=20) {
         noite()
         console.log('curva')
-      }else if(tempo<=15){
+      }else if(trocar<=30){
         
         curva()
         console.log()
       }else{
-        tempo=0
+        trocar=0
 
       }
       
       area.style.backgroundImage = `url(${imagens[indiceImagemAtual]})`;
       indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
-      tempo++;
+      trocar++;
     }
   
     function noite() {
@@ -147,7 +151,7 @@ function Passaro(alturaJogo,larguraJogo) {
 
    
    
-    let tempoAtual
+
    let velocidade =5
     this.animar = () => {
         
