@@ -424,7 +424,23 @@ function colidiu(passaro, rival) {
               });
         }, 20)
         background(areaDoJogo,pontos)
+        // ==============================Combustivel=======================
+        function combustivel(){
+            let tempo = 100
+            setInterval(function () {
+                tempo = tempo - 5
+                const nivel = document.querySelector(".gasolina-nivel")
+                nivel.setAttribute("style", "width:"+tempo+ "%");
+                if (tempo == 0){
+                    clearInterval(temporizador)
+                }
+            }, 1000);
+        }
+        combustivel()
 
+        // ==================Combustivel==================================
     }
+    
 }
+
  new FlappyBird().start()
