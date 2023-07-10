@@ -71,7 +71,7 @@ function Obstaculo(alturaJogo,larguraJogo,notificarPonto,passaro){
 }
 
 
-function Elemento(alturaJogo,larguraJogo,notificarPonto,passaro){
+function Elemento(alturaJogo,larguraJogo){
     this.elemento = novoElemento('img', 'ferramenta')
     this.elemento.src = 'img/ferramenta01.png'
     const imagensE = ['./img/ferramenta01.png', './img/ferramenta03.png','./img/ferramenta04.png']; 
@@ -111,7 +111,6 @@ function Elemento(alturaJogo,larguraJogo,notificarPonto,passaro){
     }
     const temporizador = setInterval(() => { 
         if ((this.elemento.style.display.trim()==='none')) {
-        console.log("entrou")
         this.setV('inline');
         this.elemento.src = imagensE[indiceImagemAtual]
         indiceImagemAtual = (indiceImagemAtual + 1) % imagens.length;
@@ -136,8 +135,8 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
     this.elemento.src = 'img/carro-verde.png'
     const imagens = ['./img/carro-azul.png', './img/carro-branco.png','./img/carro-verde.png']; 
     const direcaoX = [2.4,-2.10,0,2.2,-2.2,0.5]
-    const incrementoY = [3,4,5,2,1,6]
-    let incrementoAtualY = 0
+    const incrementoY = 2
+  
     let incrementoAtualX = 0
     const valoresIniciaisY=[alturaJogo/2.1,alturaJogo/2.3,alturaJogo/2.4]
     const valoresIniciaisX=[larguraJogo/2,larguraJogo/2.3,larguraJogo/1.8]
@@ -150,10 +149,10 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
     this.setX = x => this.elemento.style.left = `${x}px`
     let indiceImagemAtual = 0;
     this.animar = () => {
-        const novoY = this.getY() -incrementoY[incrementoAtualY]
+        const novoY = this.getY() -incrementoY
         const novoX = this.getX() - direcaoX[incrementoAtualX]
 
-        incrementoAtualY=Math.floor(Math.random() * incrementoY.length)
+        
         
         const alturaMaxima = alturaJogo - this.elemento.clientWidth
         const larguraMaxima = larguraJogo - this.elemento.clientHeight
@@ -174,9 +173,10 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
 
         }
         
+        
     }
 
-    this.setY(alturaJogo / 2)
+    this.setY(valoresIniciaisY[Math.floor(Math.random() * valoresIniciaisY.length)])
     this.setX(Math.floor(Math.random() * valoresIniciaisX.length))
  
    
@@ -192,6 +192,7 @@ function Rival (alturaJogo,larguraJogo,notificarPonto) {
 let sentidoCurva //variavel para indicar sentido da curva 0 - nao tem curva, 1-curva para esquerda , 2 - curva para direita
 const imagens = ['./img/curva01.png', './img/curva02.png']; // Array com os caminhos das imagens
 let trocar=0
+
 function background(area, pontos) {
     let indiceImagemAtual = 0;
     function trocarImagem() {
@@ -201,9 +202,11 @@ function background(area, pontos) {
         noite()
       }else if(trocar<=60){
         curva()
+      }else if(trocar<=80){
+        neve()
+
       }else{
         trocar=0
-
       }
       
       area.style.backgroundImage = `url(${imagens[indiceImagemAtual]})`;
@@ -219,7 +222,7 @@ function background(area, pontos) {
     function curva(){
         imagens[0] = './img/curva01.png'
         imagens[1] = './img/curva02.png'
-        sentidoCurva=-2
+        sentidoCurva=2
     }
   
     function dia() {
@@ -227,9 +230,64 @@ function background(area, pontos) {
       imagens[1] = './img/dia02.png';
       sentidoCurva=0
     }
+
+    function neve(){
+      imagens[0] = './img/dia01.png';
+      imagens[1] = './img/dia02.png';
+      sentidoCurva=0
+    }
   
     setInterval(trocarImagem, 700);
-  }
+}
+
+function Montanhas(alturaJogo,larguraJogo){
+    this.elemento = novoElemento('img', 'montanha')
+    this.elemento.src = 'img/montanha.png'
+    
+    const direcaoX = 4
+  
+
+    
+    
+    this.getY = () => parseInt(this.elemento.style.bottom.split('px')[0])
+    this.setY = y => this.elemento.style.bottom = `${y}px`
+    this.getX = ()=>parseInt(this.elemento.style.left.split('px'[0]))
+    this.setX = x => this.elemento.style.left = `${x}px`
+   let novoX;
+   const alturaMaxima = alturaJogo - this.elemento.clientWidth
+    const larguraMaxima = larguraJogo - this.elemento.clientHeight
+    this.animar = () => {
+        
+        if(sentidoCurva===1){
+             novoX = this.getX() - direcaoX
+        }else if(sentidoCurva===2){
+            novoX = this.getX() + direcaoX
+            console.log("movimentte")
+        }
+      
+        
+        
+        this.setX(novoX)
+       
+        
+       
+        if(novoX<=0){
+            this.setX(larguraMaxima)
+        }else if(novoX>=larguraMaxima){
+            this.setX(0)
+        }
+            
+
+       
+        
+        
+    }
+
+    this.setY(alturaMaxima)
+    this.setX(larguraMaxima/2)
+}
+
+
   
 function Passaro(alturaJogo,larguraJogo) {
     let voando = false
@@ -374,6 +432,7 @@ function colidiu(passaro, rival) {
         () => progresso.atualizarPontos(++pontos),passaro)
     const obstaculo = new Obstaculo(altura, largura,        
         () => progresso.atualizarPontos(++pontos),passaro)
+    const montanha = new Montanhas(altura,largura)
 
     
     // const musica = document.createElement('audio','audio');
@@ -386,6 +445,7 @@ function colidiu(passaro, rival) {
     areaDoJogo.appendChild(rival02.elemento)
     areaDoJogo.appendChild(elemento.elemento)
     areaDoJogo.appendChild(obstaculo.elemento)
+    areaDoJogo.appendChild(montanha.elemento)
 
    /*  barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento)) */
 
@@ -397,6 +457,7 @@ function colidiu(passaro, rival) {
             elemento.animar()
             obstaculo.animar()
             passaro.animar()
+            montanha.animar()
                if(colidiu(passaro,rival01)){
                  clearInterval(temporizador) 
                 }  
@@ -424,41 +485,7 @@ function colidiu(passaro, rival) {
               });
         }, 20)
         background(areaDoJogo,pontos)
-        
 
-        // ==============================Combustivel=======================
-        
-        var barra = novoElemento('div','gasolina')
-        var nivel = novoElemento('div','gasolina-nivel')
-        var janela = document.querySelector('[wm-flappy]')
-        janela.appendChild(barra)
-        barra.appendChild(nivel)
-        
-        function combustivel(){
-            let tempo = 100
-            setInterval(function () {
-                tempo = tempo - 5
-                const nivel = document.querySelector(".gasolina-nivel")
-                nivel.setAttribute("style", "width:"+tempo+ "%");
-                if (tempo == 0){
-                    clearInterval(temporizador)
-                    tempo = tempo + 5
-                }
-                if(colidiu(passaro,rival01)){
-                    clearInterval(temporizador) 
-                    tempo = tempo + 5
-                }  
-                if(colidiu(passaro,rival02)){
-                    clearInterval(temporizador) 
-                    tempo = tempo + 5
-                }
-            }, 1000);
-        }
-        combustivel()
-
-        // ==================Combustivel==================================
     }
-    
 }
-
  new FlappyBird().start()
