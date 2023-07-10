@@ -374,7 +374,7 @@ function colidiu(passaro, rival) {
         () => progresso.atualizarPontos(++pontos),passaro)
     const obstaculo = new Obstaculo(altura, largura,        
         () => progresso.atualizarPontos(++pontos),passaro)
-
+        
     
     // const musica = document.createElement('audio','audio');
     // musica.src = 'img/musica.mp4'
@@ -424,7 +424,16 @@ function colidiu(passaro, rival) {
               });
         }, 20)
         background(areaDoJogo,pontos)
+        
+
         // ==============================Combustivel=======================
+        
+        var barra = novoElemento('div','gasolina')
+        var nivel = novoElemento('div','gasolina-nivel')
+        var janela = document.querySelector(".flappy")
+        janela.appendChild(barra)
+        barra.appendChild(nivel)
+        
         function combustivel(){
             let tempo = 100
             setInterval(function () {
@@ -433,6 +442,15 @@ function colidiu(passaro, rival) {
                 nivel.setAttribute("style", "width:"+tempo+ "%");
                 if (tempo == 0){
                     clearInterval(temporizador)
+                    tempo = tempo + 5
+                }
+                if(colidiu(passaro,rival01)){
+                    clearInterval(temporizador) 
+                    tempo = tempo + 5
+                }  
+                if(colidiu(passaro,rival02)){
+                    clearInterval(temporizador) 
+                    tempo = tempo + 5
                 }
             }, 1000);
         }
