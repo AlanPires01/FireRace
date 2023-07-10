@@ -374,7 +374,7 @@ function colidiu(passaro, rival) {
         () => progresso.atualizarPontos(++pontos),passaro)
     const obstaculo = new Obstaculo(altura, largura,        
         () => progresso.atualizarPontos(++pontos),passaro)
-        
+
     
     // const musica = document.createElement('audio','audio');
     // musica.src = 'img/musica.mp4'
@@ -430,7 +430,7 @@ function colidiu(passaro, rival) {
         
         var barra = novoElemento('div','gasolina')
         var nivel = novoElemento('div','gasolina-nivel')
-        var janela = document.querySelector(".flappy")
+        var janela = document.querySelector('[wm-flappy]')
         janela.appendChild(barra)
         barra.appendChild(nivel)
         
