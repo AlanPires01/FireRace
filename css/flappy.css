@@ -107,16 +107,31 @@ body {
   }
 
 .gasolina{
+    margin-left: 140px;
     width: 300px;
     height: 20px;
     border-radius: 10px;
     background-color: #ccc;
+    
 }
 
+.fuel{
+    font-family: Tahoma;
+    font-size: 40px;
+    letter-spacing: 0px;
+    word-spacing: 0px;
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: overline;
+    font-style: oblique;
+    font-variant: normal;
+    text-transform: capitalize;
+}
 .gasolina-nivel{
     height: 100%;
     border-radius: 10px;
     background-color: #A5E82E;
+    border: 10px double #ff6550;
 }
 
 .gameover{

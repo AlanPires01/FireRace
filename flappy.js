@@ -488,45 +488,54 @@ function colidiu(passaro, rival) {
         
 
         // ==============================Combustivel=======================
+
+        //===texto fuel===
+        // var fuel = novoElemento("span","fuel")
+        // var texto = document.createTextNode("fuel")
+        // fuel.appendChild(texto)
+        // console.log(fuel)
+        // ===============
+
+
         
         var barra = novoElemento('div','gasolina')
         var nivel = novoElemento('div','gasolina-nivel')
         var janela = document.querySelector('[wm-flappy]')
+        
         janela.appendChild(barra)
         barra.appendChild(nivel)
+
+
         
         function combustivel(){
             let tempo = 100
             setInterval(function () {
-                tempo = tempo - 0.8
+                tempo = tempo - 0.1
                 const nivel = document.querySelector(".gasolina-nivel")
                 nivel.setAttribute("style", "width:"+tempo+ "%");
                 if (tempo == 0){
                     clearInterval(temporizador)
-                    tempo = tempo + 1
+                    tempo = tempo + 0.1
                 }
                 if(colidiu(passaro,rival01)){
                     clearInterval(temporizador) 
-                    tempo = tempo + 1
+                    tempo = tempo + 0.1
                 }  
                 if(colidiu(passaro,rival02)){
                     clearInterval(temporizador) 
-                    tempo = tempo + 1
+                    tempo = tempo + 0.1
                 }
                 if(colidiu(passaro,gasolina)){
-                    elemento.elemento.style.display="none"
-                    tempo = tempo + 40
+                    tempo = tempo + 100
                     if (tempo >100){
                         tempo = 100
                     }
                 }
-            }, 100);
+            }, 1000);
         }
-        combustivel()
 
         // ==================Combustivel==================================
     }
-    
 }
 
  new FlappyBird().start()
