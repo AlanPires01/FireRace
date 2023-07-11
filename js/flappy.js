@@ -497,24 +497,23 @@ function colidiu(passaro, rival) {
         function combustivel(){
             let tempo = 100
             setInterval(function () {
-                tempo = tempo - 1
+                tempo = tempo - 0.2
                 const nivel = document.querySelector(".gasolina-nivel")
                 nivel.setAttribute("style", "width:"+tempo+ "%");
                 if (tempo == 0){
-                    clearInterval(temporizador)
-                    tempo = tempo + 1
+                    clearInterval(temporizador) 
                 }
                 if(colidiu(passaro,rival01)){
                     clearInterval(temporizador) 
-                    tempo = tempo + 1
+                    tempo = tempo + 0.2
                 }  
                 if(colidiu(passaro,rival02)){
                     clearInterval(temporizador) 
-                    tempo = tempo + 1
+                    tempo = tempo + 0.2
                 }
                 if(colidiu(passaro,gasolina)){
-                    elemento.elemento.style.display="none"
-                    tempo = tempo + 15
+                    gasolina.elemento.style.display="none"
+                    tempo = tempo + 50
                     if (tempo >100){
                         tempo = 100
                     }
