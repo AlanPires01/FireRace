@@ -434,6 +434,7 @@ function colidiu(passaro, rival) {
     const gasolina = new Gasolina(altura, largura,
         () => progresso.atualizarPontos(++pontos),passaro)
     
+        //commit
     // const musica = document.createElement('audio','audio');
     // musica.src = 'img/musica.mp4'
     // musica.loop = true; // Para repetir a música continuamente

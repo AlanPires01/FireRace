@@ -118,3 +118,9 @@ body {
     border-radius: 10px;
     background-color: #A5E82E;
 }
+
+.gameover{
+    width: 700px;
+    height:1200px;
+    position:absolute
+}
